@@ -1,0 +1,186 @@
+
+{% extends "base.html" %}
+
+{% block title %}Dashboard | ExpiryGuard{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold">Dashboard</h2>
+        <p class="text-muted">Welcome back, {{ name }}!</p>
+    </div>
+
+    <a href="{{ url_for('add_product') }}" class="btn btn-primary">
+        + Add Product
+    </a>
+</div>
+
+<!-- Summary Cards -->
+<div class="row g-3 mb-4">
+
+    <div class="col-md-3 col-6">
+        <div class="card summary-card shadow-sm">
+            <div class="card-body">
+                <h6 class="text-muted">Total Products</h6>
+                <h2>{{ total_products }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-6">
+        <div class="card summary-card shadow-sm">
+            <div class="card-body">
+                <h6 class="text-muted">Expired</h6>
+                <h2 class="text-danger">{{ expired_count }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-6">
+        <div class="card summary-card shadow-sm">
+            <div class="card-body">
+                <h6 class="text-muted">Expiring Soon</h6>
+                <h2 class="text-warning">{{ expiring_soon_count }}</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-6">
+        <div class="card summary-card shadow-sm">
+            <div class="card-body">
+                <h6 class="text-muted">Fresh</h6>
+                <h2 class="text-success">{{ fresh_count }}</h2>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Product Section -->
+<div class="card shadow-sm">
+    <div class="card-body">
+
+        <h4 class="fw-bold mb-3">My Products</h4>
+
+        <form method="GET" action="{{ url_for('dashboard') }}"
+              class="row g-2 mb-4">
+
+            <div class="col-md-4">
+                <input type="text"
+                       name="search"
+                       class="form-control"
+                       placeholder="Search product..."
+                       value="{{ search_query }}">
+            </div>
+
+            <div class="col-md-3">
+                <select name="category" class="form-select">
+                    <option value="">All Categories</option>
+                    {% for category in ["Dairy", "Bakery", "Grocery", "Fruits", "Vegetables", "Other"] %}
+                        <option value="{{ category }}"
+                            {% if selected_category == category %}selected{% endif %}>
+                            {{ category }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <select name="status" class="form-select">
+                    <option value="">All Statuses</option>
+                    {% for status in ["Expired", "Expiring Soon", "Fresh"] %}
+                        <option value="{{ status }}"
+                            {% if selected_status == status %}selected{% endif %}>
+                            {{ status }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="col-md-2 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    Filter
+                </button>
+                <a href="{{ url_for('dashboard') }}"
+                   class="btn btn-outline-secondary">
+                    Clear
+                </a>
+            </div>
+
+        </form>
+
+        {% if products %}
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+
+                <thead class="table-light">
+                    <tr>
+                        <th>ID</th>
+                        <th>Product</th>
+                        <th>Category</th>
+                        <th>Quantity</th>
+                        <th>Expiry Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for product in products %}
+                    <tr>
+                        <td>{{ product.id }}</td>
+                        <td class="fw-semibold">{{ product.name }}</td>
+                        <td>{{ product.category }}</td>
+                        <td>{{ product.quantity }}</td>
+                        <td>{{ product.expiry }}</td>
+
+                        <td>
+                            {% if product.status == "Expired" %}
+                                <span class="badge bg-danger">Expired</span>
+                            {% elif product.status == "Expiring Soon" %}
+                                <span class="badge bg-warning text-dark">Expiring Soon</span>
+                            {% else %}
+                                <span class="badge bg-success">Fresh</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <div class="d-flex gap-2">
+                                <a href="{{ url_for('edit_product', product_id=product.id) }}"
+                                   class="btn btn-sm btn-outline-primary">
+                                    Edit
+                                </a>
+
+                                <form method="POST"
+                                      action="{{ url_for('delete_product', product_id=product.id) }}">
+                                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit"
+        class="btn btn-sm btn-outline-danger"
+        onclick="return confirm('Are you sure you want to delete this product?');">
+    Delete
+</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
+        {% else %}
+            <div class="text-center py-4">
+                <h5>No products found</h5>
+                <p class="text-muted">
+                    Add a product or change your search filters.
+                </p>
+            </div>
+        {% endif %}
+
+    </div>
+</div>
+
+{% endblock %}

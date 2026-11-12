@@ -1,0 +1,75 @@
+
+{% extends "base.html" %}
+
+{% block title %}Expiry Alerts | ExpiryGuard{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <h2 class="fw-bold">Expiry Alerts</h2>
+    <p class="text-muted">
+        Products that are expired or approaching their expiry date.
+    </p>
+</div>
+
+<div class="card shadow-sm">
+    <div class="card-body">
+
+        <h4 class="fw-bold mb-3">Your Alerts</h4>
+
+        {% if alerts %}
+
+            {% for alert in alerts %}
+
+                <div class="alert {% if alert.status == 'Expired' %}alert-danger{% else %}alert-warning{% endif %}">
+
+                    <h5 class="fw-bold">
+                        {{ alert.product.name }}
+                    </h5>
+
+                    <p class="mb-1">
+                        Category: {{ alert.product.category }}
+                    </p>
+
+                    <p class="mb-1">
+                        Quantity: {{ alert.product.quantity }}
+                    </p>
+
+                    <p class="mb-1">
+                        Expiry Date: {{ alert.product.expiry }}
+                    </p>
+
+                    {% if alert.status == "Expired" %}
+                        <strong>
+                            Expired {{ alert.days_left | abs }} day(s) ago.
+                        </strong>
+                    {% else %}
+                        <strong>
+                            Expires in {{ alert.days_left }} day(s).
+                        </strong>
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="text-center py-4">
+                <h5 class="text-success">All Clear!</h5>
+                <p class="text-muted">
+                    You have no expired or soon-to-expire products.
+                </p>
+            </div>
+
+        {% endif %}
+
+        <a href="{{ url_for('dashboard') }}"
+           class="btn btn-outline-primary mt-2">
+            Back to Dashboard
+        </a>
+
+    </div>
+</div>
+
+{% endblock %}

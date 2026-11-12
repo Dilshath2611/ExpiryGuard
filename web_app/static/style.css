@@ -1,0 +1,82 @@
+
+body {
+    background-color: #f4f6f9;
+    font-family: Arial, sans-serif;
+}
+
+.navbar-brand {
+    font-size: 22px;
+    letter-spacing: 0.5px;
+}
+
+.summary-card {
+    border: none;
+    border-radius: 12px;
+    transition: transform 0.2s ease;
+}
+
+.summary-card:hover {
+    transform: translateY(-4px);
+}
+
+.summary-card h2 {
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table th {
+    font-size: 14px;
+    color: #555;
+}
+
+.table td {
+    font-size: 14px;
+}
+
+.btn {
+    border-radius: 7px;
+}
+
+/* Login and Registration Pages */
+
+.auth-container {
+    min-height: 75vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 450px;
+    border: none;
+    border-radius: 16px;
+}
+
+.auth-card .form-control {
+    padding: 12px;
+    border-radius: 8px;
+}
+
+.auth-card .btn {
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.auth-card a {
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-card a:hover {
+    text-decoration: underline;
+}

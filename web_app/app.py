@@ -20,13 +20,22 @@ from flask_login import (
 )
 from flask_bcrypt import Bcrypt
 
+
 app = Flask(__name__)
 
 # Application configuration
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
-print("Secret key loaded:", bool(app.config["SECRET_KEY"]))
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///expiryguard_web.db"
+
+# Database configuration
+database_url = os.getenv("DATABASE_URL", "sqlite:///expiryguard_web.db")
+
+# Support Render PostgreSQL URLs
+if database_url.startswith("postgres://"):
+    database_url = database_url.replace("postgres://", "postgresql://", 1)
+
+app.config["SQLALCHEMY_DATABASE_URI"] = database_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
 csrf = CSRFProtect(app)
 
 # Initialize extensions
@@ -36,6 +45,7 @@ bcrypt = Bcrypt(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "login"
+
 
 
 # User database model
